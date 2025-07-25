@@ -32,7 +32,6 @@ Finally, launch the application by visiting [http://localhost/mini-ecommerce-sto
 
 User
 <img width="1263" height="662" alt="image" src="https://github.com/user-attachments/assets/d10b9867-9772-4562-a9bf-c90684234e8b" />
-<img width="2630" height="1137" alt="image" src="https://github.com/user-attachments/assets/8b41d457-d56f-4df7-875d-0e365eb7d88e" />
 <img width="2630" height="1137" alt="image" src="https://github.com/user-attachments/assets/b9229721-a05b-4c4e-a234-5b2d2e80bdb2" />
 <img width="1300" height="647" alt="image" src="https://github.com/user-attachments/assets/43f1843a-be24-4ecf-a4aa-99b67523ed82" />
 <img width="1392" height="646" alt="image" src="https://github.com/user-attachments/assets/f7cc6ebb-2824-4ac7-915a-a9dfa1e5c414" />
