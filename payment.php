@@ -59,82 +59,148 @@ $order_id = $stmt->insert_id;
 <html>
 <head>
     <title>Payment - NEEDORE</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
     <style>
-        body {
-            font-family: Arial;
-            background: #fef2f8;
-            padding: 40px;
-        }
-        .container {
-            max-width: 650px;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            margin: auto;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: black;
-        }
-        .product {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .product img {
-            width: 150px;
-            height: 150px;
-            object-fit: contain;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1.8px solid #d474cb;
-            margin-bottom: 15px;
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
+    body {
+        font-family: Arial, sans-serif;
+        background: #fef2f8;
+        padding: 40px;
+    }
+
+    .container {
+        max-width: 650px;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        margin: auto;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: black;
+        margin-bottom: 20px;
+    }
+
+    .product {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .product img {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    label {
+        display: block;
+        margin: 10px 0 5px;
+        color: #444;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1.8px solid #d474cb;
+        margin-bottom: 15px;
+        font-size: 15px;
+    }
+
+    .submit-btn {
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px;
+        background: #f5def5;
+        color: #b014b0;
+        font-size: 16px;
+        border: 2px solid #e0aee0;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background: #f7c3f7;
+        color: #a012a0;
+    }
+
+    .optional-fields {
+        display: none;
+    }
+
+    .section-title {
+        font-weight: bold;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .back-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .back-link a {
+        color: black;
+        text-decoration: none;
+    }
+
+    /* =================== Responsive Design =================== */
+    @media (max-width: 768px) {
+        body {
+            padding: 20px;
         }
-        .submit-btn {
-            margin-top: 15px;
-            width: 100%;
-            padding: 12px;
-            background: #f5def5;
-            color: #b014b0;
-            font-size: 16px;
-            border: 2px solid #e0aee0;
-            border-radius: 6px;
-            cursor: pointer;
+
+        .container {
+            padding: 20px;
         }
-        .submit-btn:hover {
-            background: #f7c3f7;
-            color: #a012a0;
+
+        .product img {
+            width: 120px;
+            height: 120px;
         }
-        .optional-fields {
-            display: none;
-        }
+
         .section-title {
-            font-weight: bold;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: #333;
+            font-size: 16px;
         }
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
+
+        .submit-btn {
+            font-size: 15px;
         }
-        .back-link a {
-            color: black;
-            text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+        .product img {
+            width: 100px;
+            height: 100px;
         }
-    </style>
+
+        input,
+        select {
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            padding: 10px;
+            font-size: 14px;
+        }
+    }
+</style>
+
 </head>
 <body>
 <div class="container">

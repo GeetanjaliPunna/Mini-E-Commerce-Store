@@ -69,11 +69,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
 <html>
 <head>
     <title><?= ucfirst($action) ?> Product</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <style>
+        * {
+    box-sizing: border-box;
+}
         body {
             font-family: Arial, sans-serif;
             padding: 40px;
-            background: #FFE4C4;
+            background: #ecc4ff70;
         }
 
         .form-box {
@@ -104,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
         }
 
         button {
-            background-color: #007bff;
+            background-color: #a250aaff;
             color: white;
             border: none;
             margin-top: 20px;
@@ -116,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
             margin-top: 20px;
             text-align: center;
             text-decoration: none;
-            background: #28a745;
+            background: #ed97dcff;
             padding: 10px;
             color: white;
             border-radius: 5px;
@@ -162,6 +167,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_action'])) {
             background: #fff;
             border: 1px solid #ddd;
         }
+
+        @media (max-width: 600px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .form-box {
+        padding: 20px;
+    }
+
+    input, textarea, button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .product-select-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .product-card {
+        padding: 8px;
+    }
+
+    .product-image {
+        height: 100px;
+    }
+
+    .product-name {
+        font-size: 14px;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+    }
+}
+
     </style>
 </head>
 <body>

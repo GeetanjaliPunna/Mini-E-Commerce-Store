@@ -59,7 +59,13 @@ if ($result && $result->num_rows === 1) {
 <html>
 <head>
     <title>Edit Profile - NEEDORE</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <style>
+        * {
+    box-sizing: border-box;
+}
+
         body {
             font-family: Arial, sans-serif;
             background: #fff0f5;
@@ -138,6 +144,33 @@ if ($result && $result->num_rows === 1) {
         .back-link a:hover {
             text-decoration: underline;
         }
+
+        @media (max-width: 480px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .container {
+        padding: 20px;
+        box-shadow: none;
+        border: 1px solid #e8cbe8;
+    }
+
+    input, textarea {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    .btn {
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+}
+
     </style>
 </head>
 <body>

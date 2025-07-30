@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin = $res->fetch_assoc();
 
         if ($admin['Password'] === $password) {
+        
+
             header("Location: admin_dashboard.php?admin_id=" . $admin['AdminID']);
             exit();
         } else {
@@ -34,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Admin Login - NEEDORE</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <style>
         * {
             margin: 0;
@@ -51,8 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding-right: 5%; /* Optional: add some right padding */
 }
 
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    z-index: -1;
+}
+
+
         form {
-            background: #FFE4C4;
+            background: #e8c9ef98;
             backdrop-filter: blur(8px);
             padding: 2rem 2.5rem;
             border-radius: 20px;
@@ -86,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         button {
             width: 100%;
             padding: 10px;
-            background-color: #ff944d;
+            background-color: #df67e7ff;
             border: none;
             border-radius: 8px;
             color: white;
@@ -96,10 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #e67300;
+            background-color: #e657f1ff;
+            
         }
         .error {
-            color: #cc0000;
+            /* color: #cc0000; */
+            color: #f23ab1ff;
             text-align: center;
             font-weight: 500;
             margin-bottom: 1rem;
@@ -113,6 +128,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.9rem;
             text-align: center;
         }
+
+        input{
+            background-color: #f8edf9ff;
+        }
+
+        @media (max-width: 768px) {
+    body {
+        justify-content: center;
+        padding: 20px;
+    }
+
+    form {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+}
+form {
+    margin-bottom: 20px;
+}
+
+
     </style>
 </head>
 <body>
@@ -124,17 +160,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="jsError" class="js-error" style="display:none;"></div>
 
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required placeholder="Enter your email">
+        <input type="email" name="email" id="email" required placeholder="Enter your email" >
 
         <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required placeholder="Enter your password"><br><br>
+        <input type="password" name="password" id="password" required placeholder="Enter your password" ><br><br>
 
         <button type="submit">Login</button>
 		<div style="text-align:center; margin-top: 1rem;">
     <a href="index.html" style="
         display:inline-block;
         padding:10px 20px;
-        background-color:#f44336;
+        background-color:#eb8bc9ff;
         color:white;
         text-decoration:none;
         border-radius:5px;

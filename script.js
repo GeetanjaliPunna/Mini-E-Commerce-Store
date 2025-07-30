@@ -1,4 +1,5 @@
 // Global variables
+
 let cart = [];
 let currentPage = 'home';
 let wishlist = [];
@@ -43,7 +44,10 @@ let wishlist = [];
     }, 4000);
   }
 
-
+function toggleMenu() {
+    const nav = document.querySelector('.nav');
+    nav.classList.toggle('show');
+  }
 
 // Sample product data
 const featuredProducts = [

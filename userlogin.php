@@ -68,9 +68,10 @@ if (isset($_POST['register'])) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login & Registration</title>
     <style>
-        body {
+        /* body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 90vh;
             background: linear-gradient(rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.60)),
@@ -191,7 +192,162 @@ if (isset($_POST['register'])) {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
+        } previous styles before responsive */
+
+         
+         
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100dvh; /* better for mobile */
+    background: linear-gradient(rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.60)),
+        url('https://img.freepik.com/premium-photo/concept-spring-shopping-season-sale-space-text_185193-98819.jpg?semt=ais_hybrid&w=740') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.card {
+    background: white;
+    padding: 2.2rem 1.8rem;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card h2 {
+    font-size: 1.625rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.card p {
+    font-size: 0.9375rem;
+    color: #555;
+    margin-bottom: 1.25rem;
+}
+
+.card input {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.625rem 0 1.125rem;
+    border-radius: 8px;
+    border: 1.8px solid #d474cb;
+    font-size: 0.9375rem;
+    transition: 0.3s;
+}
+
+.card input:focus {
+    outline: none;
+    border-color: #c800b6;
+    box-shadow: 0 0 5px rgba(200, 0, 182, 0.2);
+}
+
+.card button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #f5def5;
+    color: #b014b0;
+    border: 2px solid #e0aee0;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 0.625rem;
+}
+
+.card button:hover {
+    background: #f7c3f7;
+    color: #a012a0;
+}
+
+.switch-link {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #444;
+}
+
+.switch-link a {
+    color: #c800b6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.switch-link a:hover {
+    text-decoration: underline;
+}
+
+.error, .success {
+    text-align: center;
+    margin-bottom: 0.625rem;
+    font-weight: bold;
+    padding: 0.625rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.error {
+    color: #b4003f;
+    background-color: #ffd5de;
+    border: 1px solid #f5b4c2;
+}
+
+.success {
+    color: #2d7c2d;
+    background-color: #d9f5d9;
+    border: 1px solid #b4e1b4;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .card {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+
+    .card h2 {
+        font-size: 1.25rem;
+    }
+
+    .card input,
+    .card button {
+        font-size: 0.875rem;
+        padding: 0.625rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .card {
+        padding: 1rem;
+    }
+}
+
+
 
         
     </style>

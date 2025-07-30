@@ -17,9 +17,24 @@ $result = $conn->query($query);
 <html>
 <head>
     <title>Design My Room</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
-        body { font-family: Arial; background-color: #f2f2f2; padding: 30px; }
-        h2 { text-align: center; color: #5a2e1b; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #5a2e1b;
+            margin-bottom: 20px;
+        }
+
         #product-bar {
             display: flex;
             overflow-x: auto;
@@ -29,19 +44,27 @@ $result = $conn->query($query);
             background: #fff;
             border-radius: 10px;
             border: 1px solid #ccc;
-            max-width: 900px;
+            max-width: 1000px;
             margin-inline: auto;
+            scroll-snap-type: x mandatory;
         }
+
         .product {
+            flex: 0 0 auto;
             width: 90px;
             height: 90px;
             border: 1px solid #aaa;
             border-radius: 8px;
             object-fit: contain;
             cursor: grab;
+            scroll-snap-align: start;
+            background: #fff;
+            padding: 4px;
         }
+
         #room {
-            width: 90%;
+            width: 100%;
+            max-width: 1000px;
             height: 500px;
             margin: auto;
             border: 2px dashed #999;
@@ -49,6 +72,7 @@ $result = $conn->query($query);
             border-radius: 12px;
             position: relative;
         }
+
         .drop-item {
             width: 90px;
             height: 90px;
@@ -56,10 +80,12 @@ $result = $conn->query($query);
             cursor: move;
             object-fit: contain;
         }
+
         #actions {
             text-align: center;
             margin-top: 25px;
         }
+
         button {
             padding: 10px 20px;
             margin: 0 12px;
@@ -70,22 +96,58 @@ $result = $conn->query($query);
             cursor: pointer;
             font-size: 16px;
         }
+
         button:hover {
             background-color: #3e1d0d;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            #room {
+                height: 380px;
+            }
+
+            .product, .drop-item {
+                width: 70px;
+                height: 70px;
+            }
+
+            button {
+                font-size: 15px;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #room {
+                height: 300px;
+            }
+
+            .product, .drop-item {
+                width: 60px;
+                height: 60px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 6px 12px;
+                margin: 6px 6px;
+            }
         }
     </style>
 </head>
 <body>
+
 <h2>🛋️ Design Your Look</h2>
 
 <div id="product-bar">
-<?php while ($row = $result->fetch_assoc()): ?>
-    <img src="<?= htmlspecialchars($row['Image_URL']) ?>"
-         class="product"
-         draggable="true"
-         data-id="<?= $row['ProductID'] ?>"
-         alt="<?= htmlspecialchars($row['Name']) ?>">
-<?php endwhile; ?>
+    <?php while ($row = $result->fetch_assoc()): ?>
+        <img src="<?= htmlspecialchars($row['Image_URL']) ?>"
+             class="product"
+             draggable="true"
+             data-id="<?= $row['ProductID'] ?>"
+             alt="<?= htmlspecialchars($row['Name']) ?>">
+    <?php endwhile; ?>
 </div>
 
 <div id="room" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
@@ -97,12 +159,15 @@ $result = $conn->query($query);
 </div>
 
 <script>
-    let draggedItem;
+    let draggedItem = null;
+    let isFromProductBar = false;
     let droppedItems = [];
 
+    // Handle drag from product bar
     document.querySelectorAll('.product').forEach(item => {
         item.addEventListener('dragstart', e => {
             draggedItem = e.target;
+            isFromProductBar = true;
         });
     });
 
@@ -112,25 +177,41 @@ $result = $conn->query($query);
 
     function drop(e) {
         e.preventDefault();
-        const newItem = draggedItem.cloneNode(true);
-        newItem.classList.add('drop-item');
-        newItem.style.left = `${e.offsetX - 45}px`;
-        newItem.style.top = `${e.offsetY - 45}px`;
-        newItem.setAttribute('draggable', 'true');
-        newItem.addEventListener('dragstart', ev => {
-            draggedItem = ev.target;
-        });
+        if (!draggedItem) return;
 
-        // Double-click to delete only that item
-        newItem.addEventListener('dblclick', () => {
-            newItem.remove();
-            const id = newItem.getAttribute('data-id');
-            const index = droppedItems.indexOf(id);
-            if (index !== -1) droppedItems.splice(index, 1);
-        });
+        const offsetX = e.offsetX - 45;
+        const offsetY = e.offsetY - 45;
 
-        document.getElementById('room').appendChild(newItem);
-        droppedItems.push(draggedItem.getAttribute('data-id'));
+        if (isFromProductBar) {
+            // Clone item for new drop
+            const newItem = draggedItem.cloneNode(true);
+            newItem.classList.add('drop-item');
+            newItem.style.left = `${offsetX}px`;
+            newItem.style.top = `${offsetY}px`;
+            newItem.setAttribute('draggable', 'true');
+
+            newItem.addEventListener('dragstart', ev => {
+                draggedItem = newItem;
+                isFromProductBar = false;
+            });
+
+            newItem.addEventListener('dblclick', () => {
+                newItem.remove();
+                const id = newItem.getAttribute('data-id');
+                const index = droppedItems.indexOf(id);
+                if (index !== -1) droppedItems.splice(index, 1);
+            });
+
+            document.getElementById('room').appendChild(newItem);
+            droppedItems.push(draggedItem.getAttribute('data-id'));
+
+        } else {
+            // Move existing dropped item
+            draggedItem.style.left = `${offsetX}px`;
+            draggedItem.style.top = `${offsetY}px`;
+        }
+
+        draggedItem = null;
     }
 
     function buyAllItems() {

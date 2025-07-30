@@ -14,6 +14,28 @@ $items = [];
 $showPaymentForm = false;
 $totalAmount = 0;
 
+if (isset($_GET['remove'])) {
+    $item_id = intval($_GET['remove']);
+    
+    // Get cart ID first
+    $stmt = $conn->prepare("SELECT CartID FROM CART WHERE CustomerID = ? ORDER BY CreatedAt DESC LIMIT 1");
+    $stmt->bind_param("i", $customer_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    if ($res->num_rows === 1) {
+        $cart_id = $res->fetch_assoc()['CartID'];
+        
+        // Delete the cart item
+        $stmt = $conn->prepare("DELETE FROM CARTITEMS WHERE CartItemID = ? AND CartID = ?");
+        $stmt->bind_param("ii", $item_id, $cart_id);
+        $stmt->execute();
+    }
+    
+    header("Location: cart.php");
+    exit();
+}
+
 $stmt = $conn->prepare("SELECT CartID FROM CART WHERE CustomerID = ? ORDER BY CreatedAt DESC LIMIT 1");
 $stmt->bind_param("i", $customer_id);
 $stmt->execute();
@@ -22,14 +44,33 @@ $res = $stmt->get_result();
 if ($res->num_rows === 1) {
     $cart_id = $res->fetch_assoc()['CartID'];
 
-    if (isset($_GET['remove'])) {
-        $remove_id = intval($_GET['remove']);
-        $del_stmt = $conn->prepare("DELETE FROM CARTITEMS WHERE CartItemID = ? AND CartID = ?");
-        $del_stmt->bind_param("ii", $remove_id, $cart_id);
-        $del_stmt->execute();
-        header("Location: cart.php");
-        exit();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_qty'])) {
+    list($action, $item_id) = explode('-', $_POST['update_qty']);
+    $item_id = intval($item_id);
+
+    // Get current quantity
+    $stmt = $conn->prepare("SELECT Quantity FROM CARTITEMS WHERE CartItemID = ? AND CartID = ?");
+    $stmt->bind_param("ii", $item_id, $cart_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($row = $res->fetch_assoc()) {
+        $qty = $row['Quantity'];
+        if ($action === 'inc') {
+            $qty++;
+        } elseif ($action === 'dec' && $qty > 1) {
+            $qty--;
+        }
+
+        $stmt = $conn->prepare("UPDATE CARTITEMS SET Quantity = ? WHERE CartItemID = ? AND CartID = ?");
+        $stmt->bind_param("iii", $qty, $item_id, $cart_id);
+        $stmt->execute();
     }
+
+    header("Location: cart.php");
+    exit();
+}
+
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
         if (isset($_POST['selected_items']) && count($_POST['selected_items']) > 0) {
@@ -98,6 +139,8 @@ if ($res->num_rows === 1) {
 <html>
 <head>
     <title>Cart Checkout - NEEDORE</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -183,25 +226,117 @@ if ($res->num_rows === 1) {
             margin-top: 25px;
             text-align: center;
         }
+
+        input[type="checkbox"]:checked ~ .item-info {
+    background-color: #ffe8f8;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+/* button.submit-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    margin: 0 3px;
+} */
+
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .cart-item {
+                grid-template-columns: 30px 60px 1fr auto;
+                padding: 8px;
+                gap: 8px;
+            }
+            .cart-item img {
+                width: 50px;
+                height: 50px;
+            }
+            .item-info h4 {
+                font-size: 14px;
+            }
+            .item-info p {
+                font-size: 13px;
+            }
+            .submit-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 2px;
+            }
+            .cart-item {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+                text-align: center;
+                gap: 10px;
+            }
+            .cart-item img {
+                margin: 0 auto;
+                width: 60px;
+                height: 60px;
+            }
+            .item-info {
+                margin-bottom: 8px;
+            }
+            .remove-btn {
+                width: 100%;
+                margin-top: 8px;
+                font-size: 16px;
+                padding: 10px 0;
+            }
+            .submit-btn {
+                width: 100%;
+                font-size: 16px;
+                padding: 14px 0;
+            }
+            .form-section label, input, select {
+                font-size: 15px;
+            }
+            .form-section input, .form-section select {
+                padding: 12px;
+            }
+            .form-section {
+                min-width: 0;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>My Cart</h2>
+    <?php if (count($items) === 0 && !$showPaymentForm): ?>
+    <p style="text-align:center; font-size: 18px;">🛒 Your cart is empty.</p>
+    <div style="text-align:center; margin-top: 20px;">
+        <a href="browse_products.php" class="submit-btn">← Shop Now</a>
+    </div>
+<?php return; endif; ?>
+
     <?php if (!$showPaymentForm): ?>
         <form method="post">
-            <?php foreach ($items as $item): ?>
-                <div class="cart-item">
-                    <input type="checkbox" name="selected_items[]" value="<?= $item['CartItemID'] ?>">
-                    <img src="<?= htmlspecialchars($item['Image_URL']) ?>">
-                    <div class="item-info">
-                        <h4><?= htmlspecialchars($item['Name']) ?></h4>
-                        <p>₹<?= $item['Price'] ?> x <?= $item['Quantity'] ?></p>
-                        <p>Subtotal: ₹<?= $item['Price'] * $item['Quantity'] ?></p>
-                    </div>
-                    <a class="remove-btn" href="cart.php?remove=<?= $item['CartItemID'] ?>">Remove</a>
+    <?php foreach ($items as $item): ?>
+        <div class="cart-item">
+            <input type="checkbox" name="selected_items[]" value="<?= $item['CartItemID'] ?>">
+            <img src="<?= htmlspecialchars($item['Image_URL']) ?>">
+            <div class="item-info">
+                <h4><?= htmlspecialchars($item['Name']) ?></h4>
+                <p>₹<?= $item['Price'] ?> x <?= $item['Quantity'] ?></p>
+                <p>Subtotal: ₹<?= $item['Price'] * $item['Quantity'] ?></p>
+
+                <div style="margin-top:10px;">
+                    <button type="submit" name="update_qty" value="dec-<?= $item['CartItemID'] ?>" class="submit-btn" style="padding: 2px 10px;">−</button>
+                    <span style="margin: 0 10px; font-weight:bold;"><?= $item['Quantity'] ?></span>
+                    <button type="submit" name="update_qty" value="inc-<?= $item['CartItemID'] ?>" class="submit-btn" style="padding: 2px 10px;">+</button>
                 </div>
-            <?php endforeach; ?>
+            </div>
+            <a class="remove-btn" href="cart.php?remove=<?= $item['CartItemID'] ?>">Remove</a>
+        </div>
+    <?php endforeach; ?>
+
             <button class="submit-btn" type="submit" name="place_order">Checkout</button>
 			<div class="back-link">
         <a href="userprofile.php">← Back to Dashboard</a>
@@ -213,9 +348,9 @@ if ($res->num_rows === 1) {
         <form method="POST" class="form-section" onsubmit="return validatePaymentForm();">
             <input type="hidden" name="confirm_payment" value="1">
             <label>Full Name: <input type="text" name="full_name" required></label>
-            <label>Phone: <input type="text" name="phone" required></label>
+            <label>Phone: <input type="text" name="phone" required pattern="[0-9]{10}" title="Enter 10-digit phone number"></label>
             <label>Address: <input type="text" name="address" required></label>
-            <label>Pincode: <input type="text" name="pincode" required></label>
+            <label>Pincode:<input type="text" name="pincode" required pattern="[0-9]{6}" title="Enter 6-digit pincode"></label>
             <label>City: <input type="text" name="city" required></label>
             <label>State: <input type="text" name="state" required></label>
             <label>Payment Method:
@@ -240,6 +375,11 @@ if ($res->num_rows === 1) {
 
             <button class="submit-btn" type="submit">Confirm & Pay</button>
         </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+    <a href="browse_products.php" class="submit-btn">← Continue Shopping</a>
+</div>
+
     <?php endif; ?>
 </div>
 <script>
@@ -279,5 +419,12 @@ if ($res->num_rows === 1) {
         return true;
     }
 </script>
+
+<?php if (isset($_GET['success'])): ?>
+    <div style="background: #d4edda; padding: 15px; color: #155724; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+        ✅ Your order has been placed successfully!
+    </div>
+<?php endif; ?>
+
 </body>
 </html>
